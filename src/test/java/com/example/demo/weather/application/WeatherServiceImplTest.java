@@ -9,15 +9,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class WeatherServiceImplTest {
-
-    @Mock
-    WeatherService weatherService;
-    @Nested
-    @DisplayName("년도를 기준으로 온도 데이터 받기 테스트")
-    class tempYear {
-        @Test
-        void test1() {
-
-        }
-    }
+//
+//    @Mock
+//    WeatherService weatherService;
+//    @Nested
+//    @DisplayName("년도를 기준으로 온도 데이터 받기 테스트")
+//    class tempYear {
+//        @Test
+//        void test1() {
+//
+//        }
+//    }
 }

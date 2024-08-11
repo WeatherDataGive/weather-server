@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: 유닛 테스트 및 빌드
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -29,3 +30,23 @@ jobs:
       
     - name: Gradle build 실행
       run: ./gradlew build
+
+
+  deploy:
+    name: 도커 이미지 생성 및 배포
+    runs-on: ubuntu-latest
+    permissions: write-all
+    needs: build
+
+    steps:
+    - name: 도커 로그인
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_ID }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        
+    - name: 도커 이미지 생성
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weather-server .
+      
+    - name: 도커 이미지 업로드
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/weather-server

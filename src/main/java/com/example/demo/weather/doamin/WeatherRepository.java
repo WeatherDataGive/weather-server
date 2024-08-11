@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface WeatherRepository extends JpaRepository<Weather, Integer> {
     @Query("SELECT AVG(w.temp) FROM Weather w WHERE w.year = :year")
     Optional<Double> findAveByYear(@Param("year") int year);
+
+    @Query("SELECT AVG(w.temp) FROM Weather w WHERE w.year = :year AND w.month = :month")
+    Optional<Double> findAveByYearAndMonth(@Param("year") int year, @Param("month") int month);
 }

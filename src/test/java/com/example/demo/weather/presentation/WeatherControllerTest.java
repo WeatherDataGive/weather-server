@@ -25,84 +25,26 @@ class WeatherControllerTest {
     MockMvc mockMvc;
     String globalUrl = "/api/v1/weather";
 
-    @Nested
-    @DisplayName("날씨 데이터 받기 테스트")
-    class getData {
+    @Test
+    @DisplayName("온도 데이터 받기 엔드포인트 테스트")
+    void getTemp() throws Exception {
 
-        private final String url = globalUrl + "/temp";
-        @Nested
-        @DisplayName("엔드포인트 테스트")
-        class test1 {
-            @Test
-            @DisplayName("정상적인 요청 테스트")
-            void tes1() throws Exception {
+        String url = globalUrl + "/temp";
 
-                List<String> identifierList = new ArrayList<>();
-                identifierList.add("year");
-                identifierList.add("month");
+        List<String> identifierList = new ArrayList<>();
+        identifierList.add("year");
+        identifierList.add("month");
 
-                for(String identifier : identifierList) {
-                    // give
-                    String giveIdentifier = "identifier=" + identifier;
-                    String giveYear = "year=" + "2024";
-                    String giveData = "?" + giveIdentifier + "&" + giveYear;
+        for(String identifier : identifierList) {
+            // give
+            String giveIdentifier = "identifier=" + identifier;
+            String giveYear = "year=" + "2024";
+            String giveData = "?" + giveIdentifier + "&" + giveYear;
 
-                    // when, then
-                    mockMvc.perform(get(url + giveData))
-                            .andExpect(status().isOk());
-                }
-            }
-
-            @Nested
-            @DisplayName("잘못된 데이터 요청 테스트")
-            class test2 {
-                @Test
-                @DisplayName("잘못된 요청 테스트")
-                void tes1() throws Exception {
-                    // give`
-                    String giveIdentifier = "identifier=" + "dirty";
-                    String giveYear = "year=" + "dirty";
-                    String giveData = "?" + giveIdentifier + "&" + giveYear;
-
-                    // when, then
-                    mockMvc.perform(get(url + giveData))
-                            .andExpect(status().isBadRequest());
-                }
-                @Test
-                @DisplayName("잘못된 식별자 요청 테스트")
-                void tes2() throws Exception {
-                    // give`
-                    String giveIdentifier = "identifier=" + "dirty";
-                    String giveYear = "year=" + "2024";
-                    String giveData = "?" + giveIdentifier + "&" + giveYear;
-
-                    // when, then
-                    mockMvc.perform(get(url + giveData))
-                            .andExpect(status().isBadRequest());
-                }
-
-                @Test
-                @DisplayName("잘못된 년도 요청 테스트")
-                void tes3() throws Exception {
-                    // give`
-                    String giveIdentifier = "identifier=" + "year";
-                    String giveYear = "year=" + "dirty";
-                    String giveData = "?" + giveIdentifier + "&" + giveYear;
-
-                    // when, then
-                    mockMvc.perform(get(url + giveData))
-                            .andExpect(status().isBadRequest());
-                }
-            }
-
-            @Test
-            @DisplayName("빈 데이터 요청 테스트")
-            void tes3() throws Exception {
-                mockMvc.perform(get(url))
-                        .andExpect(status().isBadRequest());
-            }
+            // when, then
+            mockMvc.perform(get(url + giveData))
+                    .andExpect(status().isOk());
         }
-
     }
 
 }

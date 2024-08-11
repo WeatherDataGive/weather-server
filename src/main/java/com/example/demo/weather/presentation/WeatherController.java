@@ -20,15 +20,15 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping("/temp")
-    public ResponseEntity<List<Integer>> getTemp(@RequestParam("identifier") String identifier,
+    public ResponseEntity<List<Double>> getTemp(@RequestParam("identifier") String identifier,
                                                  @RequestParam("year") int year) {
         if(WeatherIdentifier.YEAR.getIdentifier().equals(identifier)) {
-            List<Integer> rtn = weatherService.tempYear(year);
+            List<Double> rtn = weatherService.tempYear(year);
             return new ResponseEntity<>(rtn, HttpStatus.OK);
         }
 
         if(WeatherIdentifier.MONTH.getIdentifier().equals(identifier)) {
-            List<Integer> rtn = weatherService.tempMonth(year);
+            List<Double> rtn = weatherService.tempMonth(year);
             return new ResponseEntity<>(rtn, HttpStatus.OK);
         }
 

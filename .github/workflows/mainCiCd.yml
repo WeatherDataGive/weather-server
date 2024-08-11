@@ -35,7 +35,7 @@ jobs:
   deploy:
     name: 도커 이미지 생성 및 배포
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions: read
     needs: build
 
     steps:
@@ -46,9 +46,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         
     - name: 도커 이미지 생성
-      run: |
-        pwd
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weather-server .
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weather-server .
       
     - name: 도커 이미지 업로드
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/weather-server

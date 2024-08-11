@@ -31,14 +31,6 @@ jobs:
     - name: Gradle build 실행
       run: ./gradlew build
 
-
-  deploy:
-    name: 도커 이미지 생성 및 배포
-    runs-on: ubuntu-latest
-    permissions: read
-    needs: build
-
-    steps:
     - name: 도커 로그인
       uses: docker/login-action@v3
       with:

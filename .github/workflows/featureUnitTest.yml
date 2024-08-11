@@ -3,11 +3,9 @@ name: 유닛 테스트 자동화
 on: 
   push:
     branches:
-      - main
       - feature/*
   pull_request:
     branches:
-      - main
       - feature/*
 
 jobs:

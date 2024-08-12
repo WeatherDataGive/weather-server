@@ -184,5 +184,50 @@ public Double year(int year) {
 | 259 ms | 54 ms | 60 ms |
 | - | - | - |
 
-처음 요청에서 걸린 시간과 두번째 세번째 요청에서도 성능이 차이가 많이 났다.
-이 성능차를 해결하기 위해 
+처음 요청에서 걸린 시간과 두번째 세번째 요청 시간의 차이가 많이 났다.
+
+이 성능차를 해결하기 위해 캐시를 만들어 성능차를 최대한 극복하였다.
+
+```
+private final Map<Integer, Double> yearCash = new HashMap<>();
+
+@Override
+@RunTimer(method = "SELECT AVG(temp) FROM weather_table w WHERE year = 2010")
+public Double year(int year) {
+    if(yearCash.containsKey(year)) return yearCash.get(year);
+    Double savedData = weatherRepository.findAveTempByYear(year).orElse((double) 0);
+    yearCash.put(year, savedData);
+    return savedData;
+}
+```
+| 159 ms | 0 ms | 0 ms |
+| - | - | - |
+
+```
+private final Map<Integer, Double> yearCash = new HashMap<>();
+
+@Override
+@RunTimer(method = "SELECT * FROM weather_table WHERE year=2000 AND month=3")
+public Double year(int year) {
+
+    if(yearCash.containsKey(year)) return yearCash.get(year);
+
+    double sum = 0;
+    double monthSum = 0;
+    for(int month = 1; month <= 12; month++) {
+        List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
+        for(Weather d : savedData) {
+            sum += d.getTemp();
+        }
+        sum /= savedData.size();
+        monthSum += sum;
+    }
+    monthSum /= 12;
+
+    yearCash.put(year, monthSum);
+
+    return monthSum;
+}
+```
+| 189 ms | 0 ms | 0 ms |
+| - | - | - |

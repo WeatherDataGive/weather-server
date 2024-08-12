@@ -1,13 +1,11 @@
 package com.example.demo.weather.presentation;
 
+import com.example.demo.weather.application.WeatherFactory;
 import com.example.demo.weather.application.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,22 +15,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WeatherController {
 
-    private final WeatherService weatherService;
+    private final WeatherFactory weatherFactory;
 
     @GetMapping("/temp")
     public ResponseEntity<List<Double>> getTemp(@RequestParam("identifier") String identifier,
-                                                 @RequestParam("year") int year) {
-        if(WeatherIdentifier.YEAR.getIdentifier().equals(identifier)) {
-            List<Double> rtn = weatherService.tempYear(year);
+                                                @RequestParam("year") int year,
+                                                @RequestParam(value = "month", defaultValue = "0") int month) {
+
+        WeatherService weatherService = weatherFactory.getInstance("temp");
+
+        if(DataIdentifier.YEAR.getIdentifier().equals(identifier)) {
+            List<Double> rtn = List.of(weatherService.year(year));
             return new ResponseEntity<>(rtn, HttpStatus.OK);
         }
 
-        if(WeatherIdentifier.MONTH.getIdentifier().equals(identifier)) {
-            List<Double> rtn = weatherService.tempMonth(year);
+        if(DataIdentifier.MONTH.getIdentifier().equals(identifier)) {
+            List<Double> rtn = weatherService.month(year);
+            return new ResponseEntity<>(rtn, HttpStatus.OK);
+        }
+
+        if(DataIdentifier.DAY.getIdentifier().equals(identifier)) {
+            if(month == 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            List<Double> rtn = weatherService.day(year, month);
             return new ResponseEntity<>(rtn, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 }

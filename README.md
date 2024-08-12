@@ -106,3 +106,44 @@ Unique Index가 있는 상황에서 현재 비지니스에서 사용되는 쿼�
 >
 > Index를 사용 했을 때에는 Mysql과 PostgreSql의 성능적인 차이는 크지 않았다.
 
+&nbsp;
+
+&nbsp;
+
+# 쿼리 성능 비교
+
+&nbsp;
+
+SELECT AVG(temp) FROM weather_table WHERE year = [년도]
+
+해당 쿼리로 데이터베이스의 값을 불러오는 동시에 평균 값을 가져오는 로직을 작성하였다.
+```
+@Override
+public Double year(int year) {
+    Double savedData = weatherRepository.findAveTempByYear(year).orElse((double) 0);
+    return savedData;
+}
+```
+하지만 해당 쿼리로 로직을 작성하게 되면 최고 온도, 최저 온도, 풍속과 강수량 등
+
+제공하고자 하는 모든 데이터의 변수를 계산하는 로직을 작성해야 하는 문제가 생기게 되었다.
+
+이를 해결하기 위해 입력 값에 해당하는 모든 날의 데이터를 불러오는 쿼리만 작성 후 모든 데이터의 평균을 구하는 로직을 작성하는 방식으로 이를 해결하고자 했다.
+```
+@Override
+public Double year(int year) {
+    double sum = 0;
+    double monthSum = 0;
+    for(int month = 1; month <= 12; month++) {
+        List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
+        for(Weather d : savedData) {
+            sum += d.getTemp();
+        }
+        sum /= savedData.size();
+        monthSum += sum;
+    }
+    monthSum /= 12;
+
+    return monthSum;
+}
+```

@@ -1,7 +1,6 @@
 package com.example.demo.weather.application;
 
 import com.example.demo.config.NotFoundDataException;
-import com.example.demo.weather.application.implement.TempService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +21,7 @@ class WeatherFactoryTest {
     WeatherFactory weatherFactory;
 
     @Mock
-    Map<String, WeatherService> weatherServiceMap;
+    Map<String, com.example.demo.weather.application.WeatherService> weatherServiceMap;
 
     String temp = DomainIdentifier.TEMP.getIdentifier();
 
@@ -32,14 +31,14 @@ class WeatherFactoryTest {
 
         @BeforeEach
         void befoer() {
-            lenient().when(weatherServiceMap.get("tempService")).thenReturn(new TempService(null));
+            lenient().when(weatherServiceMap.get("tempService")).thenReturn(new WeatherServiceImpl(null));
         }
 
         @Test
         @DisplayName("temp 테스트")
         void test1() {
-            WeatherService weatherService = weatherFactory.getInstance(temp);
-            assertInstanceOf(TempService.class, weatherService);
+            com.example.demo.weather.application.WeatherService weatherService = weatherFactory.getInstance(temp);
+            assertInstanceOf(WeatherServiceImpl.class, weatherService);
         }
 
         @Test

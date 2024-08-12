@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DomainIdentifier {
-    TEMP("temp");
+    TEMP("temp"),
+    TEMPMAX("temp_max");
     private final String identifier;
 }

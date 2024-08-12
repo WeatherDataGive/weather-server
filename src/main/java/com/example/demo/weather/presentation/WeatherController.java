@@ -17,12 +17,13 @@ public class WeatherController {
 
     private final WeatherFactory weatherFactory;
 
-    @GetMapping("/temp")
-    public ResponseEntity<List<Double>> getTemp(@RequestParam("identifier") String identifier,
+    @GetMapping("/{domain}")
+    public ResponseEntity<List<Double>> getTemp(@PathVariable("domain") String domain,
+                                                @RequestParam("identifier") String identifier,
                                                 @RequestParam("year") int year,
                                                 @RequestParam(value = "month", defaultValue = "0") int month) {
 
-        WeatherService weatherService = weatherFactory.getInstance("temp");
+        WeatherService weatherService = weatherFactory.getInstance(domain);
 
         if(DataIdentifier.YEAR.getIdentifier().equals(identifier)) {
             List<Double> rtn = List.of(weatherService.year(year));

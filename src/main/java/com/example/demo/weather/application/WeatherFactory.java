@@ -13,6 +13,7 @@ public class WeatherFactory {
     private final Map<String, WeatherService> weatherServiceMap;
     public WeatherService getInstance(String domain) {
         if(DomainIdentifier.TEMP.getIdentifier().equals(domain)) return this.weatherServiceMap.get("tempService");
+        if(DomainIdentifier.TEMPMAX.getIdentifier().equals(domain)) return this.weatherServiceMap.get("testService");
         throw new NotFoundDataException("해당 데이터를 찾을 수 없습니다");
     }
 }

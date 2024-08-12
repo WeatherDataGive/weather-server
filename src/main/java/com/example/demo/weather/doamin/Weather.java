@@ -20,9 +20,9 @@ public class Weather {
     private Integer month;
     private Integer day;
     private Integer temp;
-    private Integer temp_max;
-    private Integer temp_min;
+    private Integer tempMax;
+    private Integer tempMin;
     private Integer precipitation;
-    private Integer wind_speed;
+    private Integer windSpeed;
     private Integer humidity;
 }

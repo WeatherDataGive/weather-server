@@ -213,20 +213,18 @@ public Double year(int year) {
     if(yearCash.containsKey(year)) return yearCash.get(year);
 
     double sum = 0;
-    double monthSum = 0;
+    int count = 0;
     for(int month = 1; month <= 12; month++) {
         List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
         for(Weather d : savedData) {
+            count++;
             sum += d.getTemp();
         }
-        sum /= savedData.size();
-        monthSum += sum;
     }
-    monthSum /= 12;
+    sum /= count;
+    yearCash.put(year, sum);
 
-    yearCash.put(year, monthSum);
-
-    return monthSum;
+    return sum;
 }
 ```
 | 189 ms | 0 ms | 0 ms |

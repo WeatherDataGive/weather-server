@@ -1,6 +1,5 @@
 package com.example.demo.weather.presentation;
 
-import com.example.demo.weather.application.WeatherFactory;
 import com.example.demo.weather.application.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,16 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WeatherController {
 
-    private final WeatherFactory weatherFactory;
+    private final WeatherService weatherService;
 
     @GetMapping("/{domain}")
     public ResponseEntity<List<Double>> getTemp(@PathVariable("domain") String domain,
                                                 @RequestParam("identifier") String identifier,
                                                 @RequestParam("year") int year,
                                                 @RequestParam(value = "month", defaultValue = "0") int month) {
-
-        WeatherService weatherService = weatherFactory.getInstance(domain);
-
         if(DataIdentifier.YEAR.getIdentifier().equals(identifier)) {
             List<Double> rtn = List.of(weatherService.year(year));
             return new ResponseEntity<>(rtn, HttpStatus.OK);

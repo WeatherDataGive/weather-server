@@ -1,6 +1,5 @@
 package com.example.demo.weather.application;
 
-import com.example.demo.weather.application.WeatherServiceImpl;
 import com.example.demo.weather.doamin.Weather;
 import com.example.demo.weather.doamin.WeatherRepository;
 import org.assertj.core.api.Assertions;

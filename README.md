@@ -110,9 +110,12 @@ Unique Index가 있는 상황에서 현재 비지니스에서 사용되는 쿼�
 
 &nbsp;
 
-# 쿼리 성능 비교
+# 코드 성능 비교 및 캐시
 
 &nbsp;
+
+## 문제점
+---
 
 SELECT AVG(temp) FROM weather_table WHERE year = [년도]
 
@@ -133,17 +136,53 @@ public Double year(int year) {
 @Override
 public Double year(int year) {
     double sum = 0;
-    double monthSum = 0;
+    int count = 0;
     for(int month = 1; month <= 12; month++) {
         List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
         for(Weather d : savedData) {
+            count++;
             sum += d.getTemp();
         }
-        sum /= savedData.size();
-        monthSum += sum;
     }
-    monthSum /= 12;
-
-    return monthSum;
+    sum /= count;
+    return sum;
 }
 ```
+
+&nbsp;
+
+# 성능
+
+```
+@Override
+@RunTimer(method = "SELECT AVG(temp) FROM weather_table w WHERE year = 2010")
+public Double year(int year) {
+    Double savedData = weatherRepository.findAveTempByYear(year).orElse((double) 0);
+    return savedData;
+}
+```
+| 102 ms | 6 ms | 5 ms |
+| - | - | - |
+
+```
+@Override
+@RunTimer(method = "SELECT * FROM weather_table WHERE year = 2000 AND month = 3")
+public Double year(int year) {
+    double sum = 0;
+    int count = 0;
+    for(int month = 1; month <= 12; month++) {
+        List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
+        for(Weather d : savedData) {
+            count++;
+            sum += d.getTemp();
+        }
+    }
+    sum /= count;
+    return sum;
+}
+```
+| 259 ms | 54 ms | 60 ms |
+| - | - | - |
+
+처음 요청에서 걸린 시간과 두번째 세번째 요청에서도 성능이 차이가 많이 났다.
+이 성능차를 해결하기 위해 

@@ -1,4 +1,8 @@
-# 전반적인 MySql과 PostgreSql의 성능 비교
+# RDBMS 선택 과정
+
+&nbsp;
+
+## 전반적인 MySql과 PostgreSql의 성능 비교
 ---
 
 ### 1. 쓰기 성능
@@ -56,7 +60,7 @@
 
 &nbsp;
 
-# 현재 비지니스에서의 MySql과 PostgreSql의 성능 비교
+## 현재 비지니스에서의 MySql과 PostgreSql의 성능 비교
 ---
 
 ### 1. 현재 비지니스에서 사용되는 쿼리(INDEX 없음)

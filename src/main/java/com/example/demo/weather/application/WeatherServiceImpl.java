@@ -1,7 +1,7 @@
 package com.example.demo.weather.application;
 
+import com.example.demo.config.NotFoundDataException;
 import com.example.demo.config.RunTimer;
-import com.example.demo.weather.application.WeatherService;
 import com.example.demo.weather.doamin.Weather;
 import com.example.demo.weather.doamin.WeatherRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,43 +20,53 @@ public class WeatherServiceImpl implements WeatherService {
     private final Map<Integer, Double> yearCash = new HashMap<>();
 
     @Override
-    @RunTimer(method = "SELECT * FROM weather_table WHERE year=2000 AND month=3")
-    public Double year(int year) {
-        if(getCash(year) != null) return yearCash.get(year);
-
+    @RunTimer(method = "특정 년도 데이터 받아오기")
+    public Double year(int year, String dataType) {
         double sum = 0;
         int count = 0;
         for(int month = 1; month <= 12; month++) {
             List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
-            for(Weather d : savedData) {
-                sum += d.getTemp();
+            for(Weather data : savedData) {
+                sum += getDataByIdentifier(data, dataType);
                 count++;
             }
         }
         sum /= count;
-        putCash(year, sum);
-
         return sum;
     }
 
-    private Double getCash(int year) {
-        if(yearCash.containsKey(year)) return yearCash.get(year);
-        return null;
-    }
-
-    private void putCash(int year, double data) {
-        yearCash.put(year, data);
+    @Override
+    @RunTimer(method = "특정 년도의 특정 달 데이터 받아오기")
+    public Double month(int year, int month, String dataType) {
+        double sum = 0;
+        int count = 0;
+        List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
+        for(Weather data : savedData) {
+            sum += getDataByIdentifier(data, dataType);
+            count++;
+        }
+        sum /= count;
+        return sum;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Double> month(int year) {
-        return null;
+    @RunTimer(method = "특정 년도의 특정 달 전체 데이터 받아오기")
+    public List<Double> day(int year, int month, String dataType) {
+        List<Weather> savedData = weatherRepository.findAllByYearAndMonth(year, month);
+        List<Double> rtn = savedData.stream().map(data -> Double.valueOf(getDataByIdentifier(data, dataType))).toList();
+        return rtn;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Double> day(int year, int month) {
-        return null;
+    private Integer getDataByIdentifier(Weather data, String dataType) {
+        if(dataType != null) {
+            if(dataType.equals(DataTypeIdentifier.TEMP.getIdentifier())) return data.getTemp();
+            if(dataType.equals(DataTypeIdentifier.TEMPMAX.getIdentifier())) return data.getTempMax();
+            if(dataType.equals(DataTypeIdentifier.TEMPMIN.getIdentifier())) return data.getTempMin();
+
+            if(dataType.equals(DataTypeIdentifier.PRECIPITATION.getIdentifier())) return data.getPrecipitation();
+            if(dataType.equals(DataTypeIdentifier.WINDSPEED.getIdentifier())) return data.getWindSpeed();
+            if(dataType.equals(DataTypeIdentifier.HUMIDITY.getIdentifier())) return data.getHumidity();
+        }
+        throw new NotFoundDataException("asd");
     }
 }

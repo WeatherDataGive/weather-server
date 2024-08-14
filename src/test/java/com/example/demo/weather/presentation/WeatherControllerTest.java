@@ -1,6 +1,6 @@
 package com.example.demo.weather.presentation;
 
-import com.example.demo.weather.application.DomainIdentifier;
+import com.example.demo.weather.application.DataTypeIdentifier;
 import com.example.demo.weather.application.WeatherService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,7 +23,7 @@ class WeatherControllerTest {
     MockMvc mockMvc;
     String globalUrl = "/api/v1/weather";
 
-    String domainTemp = DomainIdentifier.TEMP.getIdentifier();
+    String domainTemp = DataTypeIdentifier.TEMP.getIdentifier();
 
     String identityYear = DataIdentifier.YEAR.getIdentifier();
     String identityMonth = DataIdentifier.MONTH.getIdentifier();
@@ -36,7 +36,7 @@ class WeatherControllerTest {
     @Nested
     @DisplayName("엔드포인트 테스트")
     class getTemp {
-        private final String domain = DomainIdentifier.TEMP.getIdentifier();
+        private final String domain = DataTypeIdentifier.TEMP.getIdentifier();
         private final String url = globalUrl + "/" + domain;
         @Test
         @DisplayName("잘못된 식별자 테스트")
@@ -91,10 +91,22 @@ class WeatherControllerTest {
             void test1() throws Exception {
                 String giveIdentifier = "identifier=" + identityMonth;
                 String giveYear = "year=" + testYear;
-                String giveData = "?" + giveIdentifier + "&" + giveYear;
+                String giveMonth = "month=" + testMonth;
+                String giveData = "?" + giveIdentifier + "&" + giveYear + "&" + giveMonth;
 
                 mockMvc.perform(get(url + giveData))
                         .andExpect(status().isOk());
+            }
+
+            @Test
+            @DisplayName("month 누락 테스트")
+            void test2() throws Exception {
+                String giveIdentifier = "identifier=" + identityMonth;
+                String giveYear = "year=" + testYear;
+                String giveData = "?" + giveIdentifier + "&" + giveYear;
+
+                mockMvc.perform(get(url + giveData))
+                        .andExpect(status().isBadRequest());
             }
         }
 

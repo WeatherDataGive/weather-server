@@ -12,7 +12,7 @@ import org.springframework.util.StopWatch;
 @Aspect
 @Component
 public class ExecutionTimer {
-    @Around("@annotation(com.example.demo.config.RunTimer)")
+    @Around("@annotation(RunTimer)")
     public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
 
@@ -26,7 +26,7 @@ public class ExecutionTimer {
         RunTimer requiredPermission = signature.getMethod().getAnnotation(RunTimer.class);
         String method = requiredPermission.method();
 
-        log.info("실행: {}, 실행 시간: {} ms", method, totalTimeMillis);
+        log.info("{}, 실행 시간: {} ms", method, totalTimeMillis);
         return result;
     }
 }
